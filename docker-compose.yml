@@ -36,6 +36,8 @@ services:
  postgres_users:
     image: postgres:alpine
     env_file: ./db/postgres_users/database.conf
+    ports: 
+      - 5432:5432
     volumes:
         - ./db/postgres_users/dbdata:/var/lib/postgresql_users
     networks:
@@ -58,3 +60,6 @@ networks:
     driver: bridge
 
 #Volumes
+
+volumes:
+  dbdata:
