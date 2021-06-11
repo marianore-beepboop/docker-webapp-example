@@ -45,6 +45,8 @@ services:
 
  api:
     build: api
+    depends_on: 
+      - postgres_users
     networks:
       - api-network
       - api2-network
