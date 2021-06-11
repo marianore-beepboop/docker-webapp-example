@@ -1,0 +1,60 @@
+version: '3.8'
+services:
+ web:
+    image: nginx
+    ports:
+        - 80:80
+    links:
+        - mysql
+        - postgres
+        - postgres_users
+    volumes_from:
+        - api
+   
+ mysql:
+    image: mysql
+    ports:
+        - 3306:3306
+    volumes:
+        - ./db/mysql/dbdata:/var/lib/mysql
+    environment:
+        MYSQL_ROOT_PASSWORD: root
+    networks:
+      - api-network
+   
+ postgres:
+    image: postgres:alpine
+    ports:
+        - 8080:8080
+    volumes:
+        - ./db/postgres/dbdata:/var/lib/postgresql
+    environment:
+        POSTGRES_PASSWORD: password
+    networks:
+      - api2-network
+
+ postgres_users:
+    image: postgres:alpine
+    env_file: ./db/postgres_users/database.conf
+    volumes:
+        - ./db/postgres_users/dbdata:/var/lib/postgresql_users
+    networks:
+      - api3-network      
+
+ api:
+    build: api
+    networks:
+      - api-network
+      - api2-network
+      - api3-network
+
+#Docker Networks
+networks:
+  api-network:
+    driver: bridge
+  api2-network:
+    driver: bridge
+  api3-network:
+    driver: bridge
+
+#Volumes
